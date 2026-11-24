@@ -28,3 +28,10 @@ The trade-off is explicit: this is not a full UTS #10 implementation. It does no
 ## The awkward edge
 
 Characters that are not in the curated table get an implicit primary weight derived from their code point. This means, for example, that `sort_key("\u4e00")` is greater than `sort_key("z")`, because the implicit weight `0x4940` is larger than the Latin primary weights. That is the intended behaviour of the implicit algorithm, but it surprises people who expect CJK characters to sort near their Latin transliterations. If you need real CJK collation, you need the full table.
+
+## Performance
+
+The window keeps a bounded buffer, so `push` is constant time and memory does not
+grow with the length of the stream. `peak` and `trough` are linear in the window
+size, which is the trade that keeps `push` cheap.
+
